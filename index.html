@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sample website</title>
+    <link href="assets/cookie_banner_container.css" rel="stylesheet"/>
+    <style>.highlight { border: 1px solid orange; }</style>
+</head>
+<body>
+
+    <h1>Sample website</h1>
+
+    <p>Add cookie banner in as few LOC as possible</p>
+
+    <h3>Requirements</h3>
+
+    <ul>
+      <li>iframe must be inside <tt>&lt;div id="cookie-banner-container"&gt;</tt></li>
+      <li>iframe must have <tt>id="cookie-banner-iframe"</tt></li>
+      <li>Must use <tt>assets</tt> from <tt>django-ngs-commons</tt> build output (contains <tt>cookie_banner_container.css</tt> and <tt>cbContainer.js</tt>)</li>
+    </ul>
+
+    <h4 id="show-doc-cookie" class="dummy"></h4>
+
+    <div id="cookie-banner-container">
+      <iframe id="cookie-banner-iframe" src="http://local.nationalgeographic.org:8000/ngs-commons/cookie-banner"></iframe>
+    </div>
+
+    <script src="assets/cbContainer.js"></script>
+
+    <script>
+
+    // Update UI every 500ms to show latest document.cookie
+    setInterval(function() {
+      var $cookieText = document.getElementById('show-doc-cookie');
+      $cookieText.innerHTML = document.cookie;
+      if ($cookieText.classList.length == 1) {
+        $cookieText.classList.add('highlight');
+      } else {
+        $cookieText.classList.remove('highlight');
+      }
+    }, 500);
+
+    // Need a listener to know when to send iframe parent origin
+    window.addEventListener('message', function(event) {
+
+        // TODO replace this with "https://www.nationalgeographic.org" (the actual host of the cookie banner)
+        trustedSource = 'http://local.nationalgeographic.org:8000';
+
+        if (event.origin !== trustedSource) return;
+
+        if (event.data === 'whatsyourorigin') {
+            event.source.postMessage(location.origin, '*');
+        } else if (event.data === 'closeCookieBanner') {
+            console.log('closing cookie banner!');
+            cookieMgmtNS.closeCookieBanner();
+        }
+    });
+    </script>
+</body>
+</html>
