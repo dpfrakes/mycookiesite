@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Sample website</title>
-    <link href="assets/cookie_banner_container.css" rel="stylesheet"/>
+    <link href="./assets/cb_container.css" rel="stylesheet"/>
     <style>.highlight { border: 1px solid orange; }</style>
 </head>
 <body>
@@ -16,7 +16,7 @@
     <ul>
       <li>iframe must be inside <tt>&lt;div id="cookie-banner-container"&gt;</tt></li>
       <li>iframe must have <tt>id="cookie-banner-iframe"</tt></li>
-      <li>Must use <tt>assets</tt> from <tt>django-ngs-commons</tt> build output (contains <tt>cookie_banner_container.css</tt> and <tt>cbContainer.js</tt>)</li>
+      <li>Must use <tt>assets</tt> from <tt>django-ngs-commons</tt> build output (contains <tt>cb_container.css</tt> and <tt>cb_container.js</tt>)</li>
     </ul>
 
     <h4 id="show-doc-cookie" class="dummy"></h4>
@@ -25,7 +25,7 @@
       <iframe id="cookie-banner-iframe" src="//df-feature-ipod-229.test.nationalgeographic.org/ngs-commons/cookie-banner"></iframe>
     </div>
 
-    <script src="assets/cbContainer.js"></script>
+    <script src="./assets/cb_container.js"></script>
 
     <script>
 
@@ -39,22 +39,6 @@
         $cookieText.classList.remove('highlight');
       }
     }, 500);
-
-    // Need a listener to know when to send iframe parent origin
-    window.addEventListener('message', function(event) {
-
-        // TODO replace this with "https://www.nationalgeographic.org" (the actual host of the cookie banner)
-        trustedSource = 'http://df-feature-ipod-229.test.nationalgeographic.org';
-
-        if (event.origin !== trustedSource) return;
-
-        if (event.data === 'whatsyourorigin') {
-            event.source.postMessage(location.origin, '*');
-        } else if (event.data === 'closeCookieBanner') {
-            console.log('closing cookie banner!');
-            cookieMgmtNS.closeCookieBanner();
-        }
-    });
     </script>
 </body>
 </html>
